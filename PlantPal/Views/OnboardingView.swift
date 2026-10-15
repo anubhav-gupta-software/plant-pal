@@ -16,6 +16,16 @@ struct OnboardingView: View {
 
     private let suggestions = ["Pip", "Momo", "Bean", "Nori"]
 
+    private enum Step: Equatable {
+        case welcome
+        case names
+        case how
+        case pal
+        case inviteSetup
+        case invite
+        case join
+    }
+
     var body: some View {
         ZStack {
             SkyBackground(wilt: .perky).ignoresSafeArea()
