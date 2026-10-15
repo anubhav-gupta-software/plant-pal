@@ -163,17 +163,16 @@ struct PlantWidgetEntryView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
+    @ViewBuilder
     private var circular: some View {
-        Group {
-            if entry.document != nil, SharedPlantStore().appGroupAvailable, !entry.showsSample {
-                Button(intent: WaterPlantIntent()) {
-                    SproutMark()
-                }
-                .buttonStyle(.plain)
-            } else {
-                Link(destination: URL(string: "plantpal://water")!) {
-                    SproutMark()
-                }
+        if entry.document != nil, SharedPlantStore().appGroupAvailable, !entry.showsSample {
+            Button(intent: WaterPlantIntent()) {
+                SproutMark()
+            }
+            .buttonStyle(.plain)
+        } else {
+            Link(destination: URL(string: "plantpal://water")!) {
+                SproutMark()
             }
         }
     }
@@ -250,19 +249,18 @@ struct PlantWidgetEntryView: View {
         }
     }
 
+    @ViewBuilder
     private var waterLink: some View {
-        Group {
-            if SharedPlantStore().appGroupAvailable {
-                Button(intent: WaterPlantIntent()) {
-                    Text("Water")
-                        .font(.caption2.weight(.bold))
-                }
-                .buttonStyle(.plain)
-            } else {
-                Link(destination: URL(string: "plantpal://water")!) {
-                    Text("Water")
-                        .font(.caption2.weight(.bold))
-                }
+        if SharedPlantStore().appGroupAvailable {
+            Button(intent: WaterPlantIntent()) {
+                Text("Water")
+                    .font(.caption2.weight(.bold))
+            }
+            .buttonStyle(.plain)
+        } else {
+            Link(destination: URL(string: "plantpal://water")!) {
+                Text("Water")
+                    .font(.caption2.weight(.bold))
             }
         }
     }
