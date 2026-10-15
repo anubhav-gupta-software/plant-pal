@@ -78,21 +78,28 @@ public struct CloudKitPlantSync {
         var working = document
         let recordID = CKRecord.ID(recordName: recordName(for: working.inviteCode))
         for _ in 0..<4 {
-            let record: CKRecord
+            let existing: CKRecord?
             do {
-                record = try await database.record(for: recordID)
-                let remote = try decode(record)
-                let merged = PlantMerge.merge(local: working, remote: remote)
-                if PlantMerge.isSameContent(merged, remote) && PlantMerge.isSameContent(merged, working) {
-                    return working
-                }
-                working = merged
+                existing = try await database.record(for: recordID)
             } catch let error as CKError where error.code == .unknownItem {
-                record = CKRecord(recordType: SyncConfig.recordType, recordID: recordID)
+                existing = nil
             } catch let error as CloudSyncError {
                 throw error
             } catch {
                 throw map(error)
+            }
+
+            let record: CKRecord
+            if let existing {
+                let remote = try decode(existing)
+                let merged = PlantMerge.merge(local: working, remote: remote)
+                if PlantMerge.isSameContent(merged, remote), PlantMerge.isSameContent(merged, working) {
+                    return working
+                }
+                working = merged
+                record = existing
+            } else {
+                record = CKRecord(recordType: SyncConfig.recordType, recordID: recordID)
             }
             try apply(working, to: record)
             do {
